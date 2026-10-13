@@ -1,0 +1,115 @@
+:root {
+  --color-primario: #1f6f8b;
+  --color-primario-oscuro: #164f63;
+  --color-acento: #e9a23b;
+}
+
+body {
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  background-color: #f6f8fa;
+}
+
+/* Botones con el color de la marca */
+.btn-marca {
+  background-color: var(--color-primario);
+  border-color: var(--color-primario);
+  color: #fff;
+}
+.btn-marca:hover {
+  background-color: var(--color-primario-oscuro);
+  border-color: var(--color-primario-oscuro);
+  color: #fff;
+}
+.texto-marca {
+  color: var(--color-primario);
+}
+
+/* Portada del home */
+.portada {
+  min-height: 85vh;
+  background-size: cover;
+  background-position: center;
+  position: relative;
+  display: flex;
+  align-items: center;
+  color: #fff;
+}
+.portada::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, rgba(10, 30, 45, 0.85) 0%, rgba(10, 30, 45, 0.35) 100%);
+}
+.portada .container {
+  position: relative;
+}
+
+/* Tarjetas con efecto al pasar el mouse */
+.tarjeta-zona {
+  overflow: hidden;
+  border: none;
+  transition: transform 0.25s, box-shadow 0.25s;
+}
+.tarjeta-zona img {
+  height: 220px;
+  object-fit: cover;
+  transition: transform 0.4s;
+}
+.tarjeta-zona:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 1rem 2rem rgba(0, 0, 0, 0.15) !important;
+}
+.tarjeta-zona:hover img {
+  transform: scale(1.06);
+}
+
+/* Tarjetas de acción (registrar espacio / reserva) */
+.tarjeta-accion {
+  border: none;
+  border-top: 4px solid var(--color-primario);
+  transition: transform 0.25s, box-shadow 0.25s;
+}
+.tarjeta-accion:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 1rem 2rem rgba(0, 0, 0, 0.12) !important;
+}
+.icono-circulo {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  background-color: rgba(31, 111, 139, 0.12);
+  color: var(--color-primario);
+}
+
+/* Formularios con imagen lateral */
+.panel-formulario {
+  min-height: 100vh;
+}
+.panel-imagen {
+  background-size: cover;
+  background-position: center;
+  position: relative;
+  color: #fff;
+}
+.panel-imagen::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(10, 30, 45, 0.3) 0%, rgba(10, 30, 45, 0.85) 100%);
+}
+.panel-imagen > div {
+  position: relative;
+}
+.input-group-text {
+  background-color: #fff;
+  color: var(--color-primario);
+}
+.form-control:focus,
+.form-select:focus {
+  border-color: var(--color-primario);
+  box-shadow: 0 0 0 0.2rem rgba(31, 111, 139, 0.25);
+}
