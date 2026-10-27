@@ -1,0 +1,18 @@
+# Bases de datos H2 locales (se generan al correr el backend)
+*.mv.db
+*.trace.db
+
+# Entornos y secretos
+.env
+*.local
+
+# IDEs
+.idea/
+.vscode/
+
+# Herramientas del agente
+.coda/
+
+# Sistema
+.DS_Store
+Thumbs.db

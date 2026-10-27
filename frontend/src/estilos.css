@@ -1,0 +1,662 @@
+/* ============================================================
+   PORTAL DEL PARAISO — Tema morado
+   ============================================================ */
+
+:root {
+  --color-primario: #7c3aed;
+  --color-primario-oscuro: #5b21b6;
+  --color-primario-suave: #ede9fe;
+  --color-acento: #a78bfa;
+  --color-fondo: #faf8ff;
+  --color-texto: #2a2438;
+  --color-texto-suave: #6f6a7d;
+  --degradado-marca: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 50%, #6d28d9 100%);
+  --sombra-tarjeta: 0 10px 30px rgba(124, 58, 237, 0.10);
+  --sombra-tarjeta-hover: 0 18px 40px rgba(124, 58, 237, 0.18);
+  --radio-tarjeta: 20px;
+}
+
+body {
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  background-color: var(--color-fondo);
+  color: var(--color-texto);
+}
+
+/* ---------- Botones de la marca ---------- */
+.btn-marca {
+  background: var(--degradado-marca);
+  border: none;
+  color: #fff;
+  font-weight: 600;
+  box-shadow: 0 6px 16px rgba(124, 58, 237, 0.30);
+  transition: transform 0.15s, box-shadow 0.25s, filter 0.25s;
+}
+.btn-marca:hover:not(:disabled) {
+  color: #fff;
+  transform: translateY(-2px);
+  box-shadow: 0 10px 22px rgba(124, 58, 237, 0.40);
+  filter: brightness(1.05);
+}
+.btn-marca:disabled {
+  opacity: 0.65;
+  color: #fff;
+}
+.texto-marca {
+  color: var(--color-primario);
+}
+
+/* Botones fantasma (sobre fondos oscuros o morados) */
+.btn-fantasma {
+  border: 1.5px solid rgba(255, 255, 255, 0.45);
+  background: rgba(255, 255, 255, 0.10);
+  color: #fff;
+  font-weight: 500;
+  backdrop-filter: blur(6px);
+  transition: background 0.2s, border-color 0.2s, transform 0.15s;
+}
+.btn-fantasma:hover {
+  background: rgba(255, 255, 255, 0.22);
+  border-color: #fff;
+  color: #fff;
+  transform: translateY(-1px);
+}
+.btn-claro {
+  background: #fff;
+  color: var(--color-primario-oscuro);
+  font-weight: 600;
+  border: none;
+  transition: transform 0.15s, box-shadow 0.2s;
+}
+.btn-claro:hover {
+  background: var(--color-primario-suave);
+  color: var(--color-primario-oscuro);
+  transform: translateY(-1px);
+}
+
+/* ---------- Barra de navegación ---------- */
+.barra-navegacion {
+  background: linear-gradient(90deg, rgba(46, 16, 101, 0.92) 0%, rgba(91, 33, 182, 0.88) 100%);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  box-shadow: 0 4px 24px rgba(46, 16, 101, 0.35);
+  padding-top: 0.65rem;
+  padding-bottom: 0.65rem;
+}
+.logo-insignia {
+  width: 38px;
+  height: 38px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.16);
+  border: 1px solid rgba(255, 255, 255, 0.30);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.15rem;
+  color: #fff;
+}
+.texto-usuario {
+  color: rgba(255, 255, 255, 0.75);
+  font-size: 0.85rem;
+}
+
+/* ---------- Portada del home ---------- */
+.portada {
+  min-height: 92vh;
+  background-size: cover;
+  background-position: center;
+  position: relative;
+  display: flex;
+  align-items: center;
+  color: #fff;
+}
+.portada::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(100deg, rgba(30, 10, 70, 0.88) 0%, rgba(76, 29, 149, 0.62) 45%, rgba(139, 92, 246, 0.25) 100%);
+}
+.portada .container {
+  position: relative;
+  z-index: 1;
+}
+.insignia-ubicacion {
+  display: inline-flex;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.16);
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  backdrop-filter: blur(8px);
+  color: #fff;
+  border-radius: 999px;
+  padding: 0.45rem 1.1rem;
+  font-size: 0.88rem;
+  font-weight: 500;
+}
+.titulo-portada {
+  font-size: clamp(2.6rem, 6vw, 4.4rem);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1.05;
+  text-shadow: 0 4px 30px rgba(0, 0, 0, 0.35);
+}
+.subtitulo-portada {
+  font-size: 1.2rem;
+  max-width: 34rem;
+  color: rgba(255, 255, 255, 0.88);
+}
+
+/* ---------- Secciones ---------- */
+.seccion {
+  background: var(--color-fondo);
+}
+.seccion-alt {
+  background: #fff;
+}
+.etiqueta-seccion {
+  display: inline-block;
+  background: var(--color-primario-suave);
+  color: var(--color-primario-oscuro);
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  border-radius: 999px;
+  padding: 0.35rem 1rem;
+}
+.titulo-seccion {
+  font-size: 2rem;
+  letter-spacing: -0.01em;
+}
+.texto-suave {
+  color: var(--color-texto-suave);
+}
+
+/* ---------- Tarjetas de zonas comunes ---------- */
+.tarjeta-zona {
+  background: #fff;
+  border-radius: var(--radio-tarjeta);
+  overflow: hidden;
+  box-shadow: var(--sombra-tarjeta);
+  transition: transform 0.25s, box-shadow 0.25s;
+  display: flex;
+  flex-direction: column;
+}
+.tarjeta-zona-foto {
+  height: 220px;
+  overflow: hidden;
+}
+.tarjeta-zona-foto img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.45s;
+}
+.tarjeta-zona:hover {
+  transform: translateY(-8px);
+  box-shadow: var(--sombra-tarjeta-hover);
+}
+.tarjeta-zona:hover img {
+  transform: scale(1.07);
+}
+.tarjeta-zona-cuerpo {
+  padding: 1.4rem 1.5rem 1.6rem;
+}
+.tarjeta-zona-cuerpo p {
+  color: var(--color-texto-suave);
+  font-size: 0.95rem;
+}
+
+/* Tarjetas de acción (registrar espacio / reserva) */
+.tarjeta-accion {
+  background: #fff;
+  border-radius: var(--radio-tarjeta);
+  box-shadow: var(--sombra-tarjeta);
+  border-top: 4px solid var(--color-primario);
+  transition: transform 0.25s, box-shadow 0.25s;
+  display: flex;
+  flex-direction: column;
+}
+.tarjeta-accion:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--sombra-tarjeta-hover);
+}
+.icono-circulo {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.9rem;
+  background: var(--color-primario-suave);
+  color: var(--color-primario);
+}
+
+/* ---------- Formularios con imagen lateral ---------- */
+.panel-formulario {
+  min-height: 100vh;
+}
+.panel-imagen {
+  background-size: cover;
+  background-position: center;
+  position: relative;
+  color: #fff;
+}
+.panel-imagen::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(46, 16, 101, 0.35) 0%, rgba(46, 16, 101, 0.85) 100%);
+}
+.panel-imagen > div {
+  position: relative;
+}
+.input-group-text {
+  background-color: #fff;
+  color: var(--color-primario);
+}
+.form-control:focus,
+.form-select:focus {
+  border-color: var(--color-acento);
+  box-shadow: 0 0 0 0.2rem rgba(139, 92, 246, 0.22);
+}
+.form-check-input:checked {
+  background-color: var(--color-primario);
+  border-color: var(--color-primario);
+}
+.form-check-input:focus {
+  box-shadow: 0 0 0 0.2rem rgba(139, 92, 246, 0.22);
+}
+
+/* Tarjeta genérica para formularios internos */
+.card {
+  border: none;
+  border-radius: var(--radio-tarjeta);
+}
+.card.p-4,
+.card.p-3 {
+  box-shadow: var(--sombra-tarjeta) !important;
+}
+
+/* ============================================================
+   PANTALLAS DE AUTENTICACIÓN
+   Degradado morado + tarjeta de vidrio (glassmorphism)
+   ============================================================ */
+
+.auth-fondo {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #2e1065 0%, #5b21b6 35%, #7c3aed 65%, #9333ea 100%);
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem 1rem;
+}
+
+/* Orbes decorativos difuminados */
+.auth-orbe {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(90px);
+  opacity: 0.55;
+  pointer-events: none;
+}
+.auth-orbe-1 {
+  width: 480px;
+  height: 480px;
+  background: #c4b5fd;
+  top: -140px;
+  left: -120px;
+  animation: flote 9s ease-in-out infinite;
+}
+.auth-orbe-2 {
+  width: 420px;
+  height: 420px;
+  background: #d8b4fe;
+  bottom: -140px;
+  right: -100px;
+  animation: flote 11s ease-in-out infinite reverse;
+}
+.auth-orbe-3 {
+  width: 260px;
+  height: 260px;
+  background: #a78bfa;
+  top: 55%;
+  left: 12%;
+  opacity: 0.35;
+  animation: flote 13s ease-in-out infinite;
+}
+@keyframes flote {
+  0%, 100% { transform: translateY(0) scale(1); }
+  50% { transform: translateY(-30px) scale(1.05); }
+}
+
+/* Tarjeta de vidrio */
+.auth-tarjeta {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  max-width: 460px;
+  background: rgba(255, 255, 255, 0.10);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 24px;
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.35);
+  color: #fff;
+  padding: 2.5rem 2.25rem;
+}
+.auth-tarjeta-amplia {
+  max-width: 560px;
+}
+
+/* Insignia / logo superior */
+.auth-insignia {
+  width: 76px;
+  height: 76px;
+  border-radius: 22px;
+  background: rgba(255, 255, 255, 0.18);
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.30);
+  color: #fff;
+  font-size: 2.1rem;
+}
+
+/* Campos flotantes sobre vidrio */
+.auth-campo {
+  position: relative;
+}
+.auth-campo input,
+.auth-campo select {
+  width: 100%;
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 14px;
+  color: #fff;
+  padding: 1.35rem 1rem 0.55rem;
+  outline: none;
+  transition: border-color 0.2s, background 0.2s;
+}
+.auth-campo select option {
+  color: #2e1065;
+}
+.auth-campo label {
+  position: absolute;
+  left: 1rem;
+  top: 0.95rem;
+  color: rgba(255, 255, 255, 0.75);
+  font-size: 0.95rem;
+  pointer-events: none;
+  transition: all 0.18s ease;
+}
+.auth-campo input:focus,
+.auth-campo select:focus {
+  background: rgba(255, 255, 255, 0.18);
+  border-color: #ddd6fe;
+  box-shadow: 0 0 0 3px rgba(221, 214, 254, 0.25);
+}
+.auth-campo input:focus + label,
+.auth-campo input:not(:placeholder-shown) + label,
+.auth-campo select:focus + label,
+.auth-campo select.relleno + label {
+  top: 0.3rem;
+  font-size: 0.72rem;
+  color: #e9d5ff;
+}
+.auth-campo .auth-icono {
+  position: absolute;
+  right: 0.9rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: rgba(255, 255, 255, 0.65);
+  pointer-events: none;
+}
+.auth-campo .auth-error {
+  color: #fecaca;
+  font-size: 0.82rem;
+  margin-top: 0.3rem;
+  padding-left: 0.35rem;
+}
+.auth-campo input::placeholder {
+  color: transparent;
+}
+
+/* Selector de rol tipo tarjetas */
+.auth-rol {
+  display: flex;
+  gap: 0.75rem;
+}
+.auth-rol-opcion {
+  flex: 1;
+  border: 1.5px solid rgba(255, 255, 255, 0.3);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff;
+  padding: 0.8rem 0.5rem;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.auth-rol-opcion i {
+  display: block;
+  font-size: 1.4rem;
+  margin-bottom: 0.25rem;
+}
+.auth-rol-opcion:hover {
+  background: rgba(255, 255, 255, 0.16);
+}
+.auth-rol-opcion.activa {
+  background: #fff;
+  color: var(--color-primario-oscuro);
+  border-color: #fff;
+  font-weight: 600;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+}
+
+/* Botón principal degradado */
+.auth-boton {
+  width: 100%;
+  border: none;
+  border-radius: 14px;
+  padding: 0.85rem;
+  font-weight: 600;
+  font-size: 1.05rem;
+  color: #fff;
+  background: rgba(255, 255, 255, 0.92);
+  color: var(--color-primario-oscuro);
+  transition: transform 0.15s, box-shadow 0.3s, background 0.2s;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.25);
+}
+.auth-boton:hover:not(:disabled) {
+  background: #fff;
+  transform: translateY(-2px);
+  box-shadow: 0 14px 30px rgba(0, 0, 0, 0.32);
+  color: var(--color-primario-oscuro);
+}
+.auth-boton:disabled {
+  opacity: 0.7;
+}
+
+/* Enlaces y textos auxiliares */
+.auth-enlace {
+  color: #f3e8ff;
+  font-weight: 600;
+  text-decoration: none;
+  border-bottom: 1px dashed rgba(243, 232, 255, 0.6);
+}
+.auth-enlace:hover {
+  color: #fff;
+  border-bottom-color: #fff;
+}
+.auth-alerta {
+  background: rgba(239, 68, 68, 0.22);
+  border: 1px solid rgba(248, 113, 113, 0.5);
+  color: #fecaca;
+  border-radius: 12px;
+  padding: 0.7rem 1rem;
+  font-size: 0.9rem;
+}
+
+/* Divisor con línea */
+.auth-divisor {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  color: rgba(255, 255, 255, 0.55);
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+}
+.auth-divisor::before,
+.auth-divisor::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.25);
+}
+
+/* ---------- Páginas internas ---------- */
+.pagina-interna {
+  padding-top: 110px;
+  padding-bottom: 48px;
+}
+.encabezado-pagina h1 {
+  font-weight: 800;
+  letter-spacing: -0.01em;
+}
+
+/* Tablas (reservas globales) */
+.tabla-elegante thead th {
+  background: var(--color-primario-suave);
+  color: var(--color-primario-oscuro);
+  font-weight: 600;
+  border-bottom: none;
+}
+.tabla-elegante tbody tr:hover {
+  background: rgba(139, 92, 246, 0.06);
+}
+
+/* Badges de estado */
+.badge-estado {
+  border-radius: 999px;
+  padding: 0.4em 0.9em;
+  font-weight: 600;
+  font-size: 0.78rem;
+}
+.badge-estado.confirmada {
+  background: var(--color-primario-suave);
+  color: var(--color-primario-oscuro);
+}
+.badge-estado.cancelada {
+  background: #f3f4f6;
+  color: #6b7280;
+}
+
+/* Badge de categoría en tarjetas de espacios */
+.badge-categoria {
+  background: var(--color-primario-suave);
+  color: var(--color-primario-oscuro);
+  border-radius: 999px;
+  padding: 0.4em 0.9em;
+  font-weight: 600;
+  font-size: 0.72rem;
+}
+
+/* Pie de página */
+.pie-pagina {
+  background: linear-gradient(90deg, #2e1065 0%, #4c1d95 100%);
+  color: #fff;
+}
+.pie-pagina .texto-suave {
+  color: rgba(255, 255, 255, 0.65);
+}
+
+/* ---------- Spinner ---------- */
+.spinner-marca {
+  color: var(--color-primario);
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 576px) {
+  .auth-tarjeta {
+    padding: 2rem 1.4rem;
+  }
+  .portada {
+    min-height: 100vh;
+  }
+}
+
+/* ============================================================
+   Login con imagen lateral (fachada) — versión sobria
+   ============================================================ */
+.auth-fondo-imagen {
+  min-height: 100vh;
+  display: flex;
+  background-color: #1e1b4b;
+}
+
+/* Panel izquierdo: fachada con velo morado oscuro */
+.auth-panel-foto {
+  flex: 1 1 50%;
+  background-size: cover;
+  background-position: center;
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  padding: 3rem;
+  color: #fff;
+}
+.auth-panel-foto::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(160deg, rgba(30, 27, 75, 0.55) 0%, rgba(46, 16, 101, 0.55) 50%, rgba(23, 37, 84, 0.75) 100%);
+}
+.auth-panel-foto > div {
+  position: relative;
+  z-index: 1;
+  max-width: 480px;
+}
+.auth-panel-foto .auth-marca-mini {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-weight: 700;
+  font-size: 1.05rem;
+  letter-spacing: 0.02em;
+  color: #ddd6fe;
+}
+.auth-panel-foto h2 {
+  font-size: 2.1rem;
+  font-weight: 800;
+  line-height: 1.15;
+  text-shadow: 0 2px 18px rgba(0, 0, 0, 0.45);
+}
+.auth-panel-foto p {
+  color: rgba(255, 255, 255, 0.85);
+}
+
+/* Fondo del lado del formulario: sobrio, casi sólido */
+.auth-fondo-serio {
+  flex: 1 1 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2.5rem 1.5rem;
+  background:
+    radial-gradient(ellipse at 20% 0%, rgba(109, 40, 217, 0.35) 0%, transparent 55%),
+    radial-gradient(ellipse at 100% 100%, rgba(37, 99, 235, 0.25) 0%, transparent 55%),
+    #211d42;
+  position: relative;
+  overflow: hidden;
+}
+
+/* En móvil la foto se oculta y queda solo el formulario */
+@media (max-width: 991px) {
+  .auth-panel-foto {
+    display: none;
+  }
+}
