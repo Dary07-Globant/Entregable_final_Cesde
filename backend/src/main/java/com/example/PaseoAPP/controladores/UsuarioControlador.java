@@ -3,7 +3,6 @@ package com.example.PaseoAPP.controladores;
 import com.example.PaseoAPP.dtos.UsuarioDTO;
 import com.example.PaseoAPP.modelos.Usuario;
 import com.example.PaseoAPP.servicios.IUsuarioServicio;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -12,11 +11,8 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/portalapi/v1/usuarios")
+@RequestMapping({"/portalapi/v1/usuarios", "/api/users"})
 public class UsuarioControlador {
-
-    //Por cada serivicio ofrecido
-    //configuro 1 funcion controladora
 
     private final IUsuarioServicio servicio;
 
@@ -24,35 +20,34 @@ public class UsuarioControlador {
         this.servicio = servicio;
     }
 
-    //funcion para controlar el guardado
+    // POST /portalapi/v1/usuarios o /api/users
     @PostMapping
-    public ResponseEntity<UsuarioDTO>controlarGuardado(@RequestBody Usuario datos){
+    public ResponseEntity<UsuarioDTO> controlarGuardado(@RequestBody Usuario datos) {
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(this.servicio.guardarUsuarioEnBD(datos));
     }
-    //funcion para controlar las modificaciones
+
+    // PUT /portalapi/v1/usuarios/{id} o /api/users/{id}
     @PutMapping("/{id}")
-    public ResponseEntity<UsuarioDTO>controlarModificado(@RequestBody Usuario datos, @PathVariable UUID id){
+    public ResponseEntity<UsuarioDTO> controlarModificado(@RequestBody Usuario datos, @PathVariable UUID id) {
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(this.servicio.modificarUsuarioEnBD(datos,id));
+                .body(this.servicio.modificarUsuarioEnBD(datos, id));
     }
 
-    //funcion para controlar el borrado
+    // DELETE /portalapi/v1/usuarios/{id} o /api/users/{id}
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void>controlarBorrado(@PathVariable UUID id){
-       this.servicio.eliminarUsuarioEnBD((id));
-       return ResponseEntity.noContent().build(); //204
+    public ResponseEntity<Void> controlarBorrado(@PathVariable UUID id) {
+        this.servicio.eliminarUsuarioEnBD(id);
+        return ResponseEntity.noContent().build();
     }
 
-
-    //funcion para controlar el listar
+    // GET /portalapi/v1/usuarios o /api/users
     @GetMapping
-    public ResponseEntity<List<UsuarioDTO>>controlarListado(){
+    public ResponseEntity<List<UsuarioDTO>> controlarListado() {
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(this.servicio.buscarUsuariosEnBD());
     }
-
 }

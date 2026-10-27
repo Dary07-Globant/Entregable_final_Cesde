@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/portalapi/v1/reservas")
+@RequestMapping({"/portalapi/v1/reservas", "/api/bookings"})
 public class ReservaControlador {
 
     private final IReservaServicio servicio;
@@ -22,15 +22,23 @@ public class ReservaControlador {
         this.servicio = servicio;
     }
 
-    // POST /portalapi/v1/reservas  (residentes y administrador)
+    // POST /portalapi/v1/reservas o /api/bookings (residentes y administrador)
     @PostMapping
     public ResponseEntity<ReservaDTO> controlarGuardado(@RequestBody Reserva datos) {
+        UUID usuarioIdAutenticado = ContextoSesion.obtenerUsuarioId();
+        // Si no es admin o si no envió usuario, asociar siempre al usuario autenticado
+        if (!ContextoSesion.esAdministrador() || datos.getUsuario() == null || datos.getUsuario().getId() == null) {
+            Usuario u = new Usuario();
+            u.setId(usuarioIdAutenticado);
+            datos.setUsuario(u);
+        }
+
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(this.servicio.guardarReservaEnBD(datos));
     }
 
-    // GET /portalapi/v1/reservas  (solo administrador, validado en el filtro)
+    // GET /portalapi/v1/reservas o /api/bookings (solo administrador, validado en filtro)
     @GetMapping
     public ResponseEntity<List<ReservaDTO>> controlarListado() {
         return ResponseEntity
@@ -38,7 +46,7 @@ public class ReservaControlador {
                 .body(this.servicio.buscarReservasEnBD());
     }
 
-    // GET /portalapi/v1/reservas/my-bookings  (reservas del usuario autenticado)
+    // GET /portalapi/v1/reservas/my-bookings o /api/bookings/my-bookings
     @GetMapping("/my-bookings")
     public ResponseEntity<List<ReservaDTO>> controlarMisReservas() {
         UUID usuarioId = ContextoSesion.obtenerUsuarioId();
@@ -47,7 +55,7 @@ public class ReservaControlador {
                 .body(this.servicio.buscarReservasDeUsuarioEnBD(usuarioId));
     }
 
-    // PATCH /portalapi/v1/reservas/{id}/cancel  (dueño de la reserva o administrador)
+    // PATCH /portalapi/v1/reservas/{id}/cancel o /api/bookings/{id}/cancel
     @PatchMapping("/{id}/cancel")
     public ResponseEntity<ReservaDTO> controlarCancelacion(@PathVariable UUID id) {
         UUID usuarioId = ContextoSesion.obtenerUsuarioId();

@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/portalapi/v1/espacios")
+@RequestMapping({"/portalapi/v1/espacios", "/api/spaces"})
 public class EspacioControlador {
 
     private final IEspacioServicio servicio;
@@ -20,7 +20,7 @@ public class EspacioControlador {
         this.servicio = servicio;
     }
 
-    // GET /portalapi/v1/espacios  (publico para usuarios autenticados: solo activos)
+    // GET /portalapi/v1/espacios o /api/spaces (espacios activos)
     @GetMapping
     public ResponseEntity<List<EspacioDTO>> controlarListado() {
         return ResponseEntity
@@ -28,7 +28,7 @@ public class EspacioControlador {
                 .body(this.servicio.buscarEspaciosActivosEnBD());
     }
 
-    // POST /portalapi/v1/espacios  (solo administrador, validado en el filtro)
+    // POST /portalapi/v1/espacios o /api/spaces (solo administrador)
     @PostMapping
     public ResponseEntity<EspacioDTO> controlarGuardado(@RequestBody Espacio datos) {
         return ResponseEntity
@@ -36,7 +36,7 @@ public class EspacioControlador {
                 .body(this.servicio.guardarEspacioEnBD(datos));
     }
 
-    // PUT /portalapi/v1/espacios/{id}  (solo administrador)
+    // PUT /portalapi/v1/espacios/{id} o /api/spaces/{id} (solo administrador)
     @PutMapping("/{id}")
     public ResponseEntity<EspacioDTO> controlarModificado(@RequestBody Espacio datos, @PathVariable UUID id) {
         return ResponseEntity
@@ -44,7 +44,15 @@ public class EspacioControlador {
                 .body(this.servicio.modificarEspacioEnBD(datos, id));
     }
 
-    // GET /portalapi/v1/espacios/{id}
+    // PATCH /portalapi/v1/espacios/{id} o /api/spaces/{id}
+    @PatchMapping("/{id}")
+    public ResponseEntity<EspacioDTO> controlarModificadoParcial(@RequestBody Espacio datos, @PathVariable UUID id) {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(this.servicio.modificarEspacioEnBD(datos, id));
+    }
+
+    // GET /portalapi/v1/espacios/{id} o /api/spaces/{id}
     @GetMapping("/{id}")
     public ResponseEntity<EspacioDTO> controlarBusquedaPorId(@PathVariable UUID id) {
         return ResponseEntity

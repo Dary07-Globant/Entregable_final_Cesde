@@ -9,7 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/portalapi/v1/auth")
+@RequestMapping({"/portalapi/v1/auth", "/api/auth"})
 public class AuthControlador {
 
     private final AuthServicio servicio;
@@ -18,7 +18,7 @@ public class AuthControlador {
         this.servicio = servicio;
     }
 
-    // POST /portalapi/v1/auth/register
+    // POST /portalapi/v1/auth/register o /api/auth/register
     @PostMapping("/register")
     public ResponseEntity<SesionDTO> controlarRegistro(@RequestBody Usuario datos) {
         return ResponseEntity
@@ -26,7 +26,7 @@ public class AuthControlador {
                 .body(this.servicio.registrar(datos));
     }
 
-    // POST /portalapi/v1/auth/login
+    // POST /portalapi/v1/auth/login o /api/auth/login
     @PostMapping("/login")
     public ResponseEntity<SesionDTO> controlarLogin(@RequestBody PeticionLoginDTO peticion) {
         return ResponseEntity

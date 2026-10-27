@@ -10,21 +10,15 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
-import java.util.List;
 import java.util.UUID;
 
 /**
  * Interpreta el header Authorization: Bearer <token> en cada peticion.
- * Las rutas de /auth son publicas; el resto exige un token valido.
+ * Preflights CORS (OPTIONS) y rutas de /auth son publicas.
  * Las rutas de administracion exigen rol ADMINISTRADOR.
  */
 @Component
 public class FiltroAutenticacion extends OncePerRequestFilter {
-
-    private static final List<String> RUTAS_PUBLICAS = List.of(
-            "/paseoapi/v1/auth/login",
-            "/paseoapi/v1/auth/register"
-    );
 
     private final UtilJWT utilJWT;
 
@@ -39,6 +33,13 @@ public class FiltroAutenticacion extends OncePerRequestFilter {
 
         String ruta = peticion.getRequestURI();
         String metodo = peticion.getMethod();
+
+        // Responder OK a preflights de CORS (OPTIONS) enviados por navegadores
+        if ("OPTIONS".equalsIgnoreCase(metodo)) {
+            respuesta.setStatus(HttpServletResponse.SC_OK);
+            cadena.doFilter(peticion, respuesta);
+            return;
+        }
 
         // Registro y login son publicos
         if (ruta.endsWith("/auth/login") || ruta.endsWith("/auth/register")) {
@@ -62,15 +63,15 @@ public class FiltroAutenticacion extends OncePerRequestFilter {
         ContextoSesion.establecer(UUID.fromString(datos.getSubject()), datos.get("rol", String.class));
 
         try {
-            // Solo el administrador puede administrar usuarios y crear/modificar espacios
-            boolean esRutaDeUsuarios = ruta.contains("/usuarios");
-            boolean esEscrituraDeEspacios = ruta.contains("/espacios")
+            // Solo el administrador puede administrar usuarios, crear/modificar espacios y ver listado global de reservas
+            boolean esRutaDeUsuarios = ruta.contains("/usuarios") || ruta.contains("/users");
+            boolean esEscrituraDeEspacios = (ruta.contains("/espacios") || ruta.contains("/spaces"))
                     && !"GET".equalsIgnoreCase(metodo);
-            boolean esListadoDeReservas = ruta.contains("/reservas")
+            boolean esListadoGlobalDeReservas = (ruta.contains("/reservas") || ruta.contains("/bookings"))
                     && "GET".equalsIgnoreCase(metodo)
                     && !ruta.endsWith("/my-bookings");
 
-            if ((esRutaDeUsuarios || esEscrituraDeEspacios || esListadoDeReservas)
+            if ((esRutaDeUsuarios || esEscrituraDeEspacios || esListadoGlobalDeReservas)
                     && !"ADMINISTRADOR".equals(datos.get("rol", String.class))) {
                 respuesta.sendError(HttpStatus.FORBIDDEN.value(), "Esta accion requiere rol de administrador");
                 return;

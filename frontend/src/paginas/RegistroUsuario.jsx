@@ -1,8 +1,8 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-
 import { registrarUsuario } from '../services/servicioAuth.js'
 import { useSesion } from '../contexto/ContextoSesion.jsx'
+import fachada from '../assets/fachada_unidad.jpg'
 
 export function RegistroUsuario() {
   const navegar = useNavigate()
@@ -14,7 +14,7 @@ export function RegistroUsuario() {
     torre: '',
     correo: '',
     contraseña: '',
-    rol: '',
+    rol: 'USUARIO',
   })
   const [errores, setErrores] = useState({})
   const [errorApi, setErrorApi] = useState('')
@@ -22,28 +22,32 @@ export function RegistroUsuario() {
 
   function manejarCambio(evento) {
     const { name, value } = evento.target
-    setUsuario({ ...usuario, [name]: value })
+    setUsuario((prev) => ({ ...prev, [name]: value }))
+    if (errores[name]) {
+      setErrores((prev) => ({ ...prev, [name]: '' }))
+    }
   }
 
   function validar() {
     const nuevosErrores = {}
-    if (usuario.nombres.trim() === '') {
+    if (!usuario.nombres.trim()) {
       nuevosErrores.nombres = 'Los nombres son obligatorios'
     }
     if (!/^\S+@\S+\.\S+$/.test(usuario.correo)) {
-      nuevosErrores.correo = 'Ingrese un correo válido'
+      nuevosErrores.correo = 'Ingresa un correo electrónico válido'
     }
     if (usuario.contraseña.length < 6) {
       nuevosErrores.contraseña = 'La contraseña debe tener mínimo 6 caracteres'
     }
-    if (usuario.rol === '') {
-      nuevosErrores.rol = 'Seleccione un rol'
+    if (!usuario.rol) {
+      nuevosErrores.rol = 'Selecciona un rol'
     }
     return nuevosErrores
   }
 
   async function manejarEnvio(evento) {
     evento.preventDefault()
+    setErrorApi('')
 
     const nuevosErrores = validar()
     setErrores(nuevosErrores)
@@ -51,148 +55,191 @@ export function RegistroUsuario() {
       return
     }
 
-    setErrorApi('')
     setEnviando(true)
     try {
-      // El backend registra el usuario y devuelve la sesion con token
       const sesion = await registrarUsuario(usuario)
       guardarSesion(sesion)
-      navegar(sesion.rol === 'ADMINISTRADOR' ? '/admin/reservas-globales' : '/catalogo')
+      navegar(sesion.rol === 'ADMINISTRADOR' ? '/admin/reservas-globales' : '/home')
     } catch (error) {
-      const mensaje = error.response?.data?.message
-        || error.response?.data
-        || 'No fue posible registrar el usuario'
-      setErrorApi(typeof mensaje === 'string' ? mensaje : 'No fue posible registrar el usuario')
+      const mensaje =
+        error.response?.data?.message ||
+        error.response?.data ||
+        'No fue posible registrar el usuario. Es posible que el correo ya esté en uso.'
+      setErrorApi(typeof mensaje === 'string' ? mensaje : 'Error al registrar la cuenta.')
     } finally {
       setEnviando(false)
     }
   }
 
   return (
-    <div className="auth-fondo">
-      <div className="auth-orbe auth-orbe-1"></div>
-      <div className="auth-orbe auth-orbe-2"></div>
-      <div className="auth-orbe auth-orbe-3"></div>
+    <div className="auth-pantalla">
+      {/* Panel visual izquierdo */}
+      <div
+        className="auth-panel-visual"
+        style={{ backgroundImage: `url(${fachada})` }}
+      >
+        <div className="d-flex align-items-center gap-2">
+          <span className="logo-insignia">
+            <i className="bi bi-buildings"></i>
+          </span>
+          <span className="fw-semibold fs-5 tracking-tight">Portal del Paraíso</span>
+        </div>
 
-      <div className="auth-tarjeta auth-tarjeta-amplia">
-        <div className="text-center mb-4">
-          <div className="auth-insignia mb-3">
-            <i className="bi bi-buildings-fill"></i>
-          </div>
-          <h1 className="h4 fw-bold mb-1">Portal del Paraíso</h1>
-          <p className="mb-0" style={{ color: 'rgba(255,255,255,0.7)', fontSize: '0.9rem' }}>
-            Unidad Residencial
+        <div>
+          <span className="insignia-ubicacion mb-3">
+            <i className="bi bi-houses me-1"></i>Comunidad Residencial
+          </span>
+          <h2 className="display-6 fw-bold text-white mb-3">
+            Únete a la convivencia digital de tu unidad.
+          </h2>
+          <p className="text-white-50 mb-0" style={{ maxWidth: '420px', lineHeight: '1.6' }}>
+            Crea tu perfil como residente para apartar fechas, verificar disponibilidad en tiempo real y disfrutar de los espacios comunes con total comodidad.
           </p>
         </div>
 
-        <div className="auth-divisor mb-4">Crea tu cuenta</div>
+        <div className="small text-white-50">
+          Portal del Paraíso · Sabaneta, Antioquia
+        </div>
+      </div>
 
-        {errorApi && <div className="auth-alerta mb-3"><i className="bi bi-exclamation-circle me-2"></i>{errorApi}</div>}
-
-        <form onSubmit={manejarEnvio} noValidate>
-          <div className="auth-campo mb-3">
-            <input
-              type="text"
-              name="nombres"
-              placeholder=" "
-              value={usuario.nombres}
-              onChange={manejarCambio}
-            />
-            <label>Nombres completos</label>
-            <i className="bi bi-person auth-icono"></i>
-            {errores.nombres && <div className="auth-error">{errores.nombres}</div>}
-          </div>
-
-          <div className="row g-3 mb-1">
-            <div className="col-6">
-              <div className="auth-campo">
-                <input
-                  type="text"
-                  name="apartamento"
-                  placeholder=" "
-                  value={usuario.apartamento}
-                  onChange={manejarCambio}
-                />
-                <label>Apartamento</label>
-                <i className="bi bi-house-door auth-icono"></i>
-              </div>
-            </div>
-            <div className="col-6">
-              <div className="auth-campo">
-                <input
-                  type="text"
-                  name="torre"
-                  placeholder=" "
-                  value={usuario.torre}
-                  onChange={manejarCambio}
-                />
-                <label>Torre</label>
-                <i className="bi bi-building auth-icono"></i>
-              </div>
-            </div>
-          </div>
-
-          <div className="auth-campo my-3">
-            <input
-              type="email"
-              name="correo"
-              placeholder=" "
-              autoComplete="email"
-              value={usuario.correo}
-              onChange={manejarCambio}
-            />
-            <label>Correo electrónico</label>
-            <i className="bi bi-envelope auth-icono"></i>
-            {errores.correo && <div className="auth-error">{errores.correo}</div>}
-          </div>
-
-          <div className="auth-campo mb-3">
-            <input
-              type="password"
-              name="contraseña"
-              placeholder=" "
-              value={usuario.contraseña}
-              onChange={manejarCambio}
-            />
-            <label>Contraseña (mínimo 6 caracteres)</label>
-            <i className="bi bi-lock auth-icono"></i>
-            {errores.contraseña && <div className="auth-error">{errores.contraseña}</div>}
-          </div>
-
+      {/* Formulario derecho */}
+      <div className="auth-panel-formulario">
+        <div className="auth-caja auth-caja-amplia">
           <div className="mb-4">
-            <p className="mb-2" style={{ color: 'rgba(255,255,255,0.75)', fontSize: '0.85rem' }}>
-              ¿Cómo usarás el portal?
-            </p>
-            <div className="auth-rol">
-              <button
-                type="button"
-                className={`auth-rol-opcion ${usuario.rol === 'USUARIO' ? 'activa' : ''}`}
-                onClick={() => setUsuario({ ...usuario, rol: 'USUARIO' })}
-              >
-                <i className="bi bi-person-badge"></i>
-                Residente
-              </button>
-              <button
-                type="button"
-                className={`auth-rol-opcion ${usuario.rol === 'ADMINISTRADOR' ? 'activa' : ''}`}
-                onClick={() => setUsuario({ ...usuario, rol: 'ADMINISTRADOR' })}
-              >
-                <i className="bi bi-shield-lock"></i>
-                Administrador
-              </button>
+            <div className="auth-insignia-sólida">
+              <i className="bi bi-person-plus"></i>
             </div>
-            {errores.rol && <div className="auth-error mt-1" style={{ color: '#fecaca', fontSize: '0.82rem' }}>{errores.rol}</div>}
+            <h2 className="fw-bold mb-1" style={{ color: 'var(--color-texto)' }}>
+              Crear cuenta
+            </h2>
+            <p className="texto-suave mb-0">
+              Registra tus datos como residente o administrador de la unidad.
+            </p>
           </div>
 
-          <button type="submit" className="auth-boton" disabled={enviando}>
-            <i className="bi bi-person-plus me-2"></i>
-            {enviando ? 'Registrando...' : 'Crear mi cuenta'}
-          </button>
-        </form>
+          {errorApi && (
+            <div className="alerta-relajante error">
+              <i className="bi bi-exclamation-triangle-fill"></i>
+              <span>{errorApi}</span>
+            </div>
+          )}
 
-        <p className="text-center mt-4 mb-0" style={{ color: 'rgba(255,255,255,0.75)', fontSize: '0.9rem' }}>
-          ¿Ya tienes cuenta? <Link to="/login" className="auth-enlace">Inicia sesión</Link>
-        </p>
+          <form onSubmit={manejarEnvio} noValidate>
+            <div className="auth-input-grupo">
+              <label>Nombres completos <span className="text-danger">*</span></label>
+              <div className="auth-input-wrapper">
+                <i className="bi bi-person"></i>
+                <input
+                  type="text"
+                  name="nombres"
+                  placeholder="Ej: Laura Gómez Pérez"
+                  value={usuario.nombres}
+                  onChange={manejarCambio}
+                />
+              </div>
+              {errores.nombres && <div className="auth-input-error">{errores.nombres}</div>}
+            </div>
+
+            <div className="row g-2">
+              <div className="col-6">
+                <div className="auth-input-grupo">
+                  <label>Torre</label>
+                  <div className="auth-input-wrapper">
+                    <i className="bi bi-building"></i>
+                    <input
+                      type="text"
+                      name="torre"
+                      placeholder="Ej: Torre 1"
+                      value={usuario.torre}
+                      onChange={manejarCambio}
+                    />
+                  </div>
+                </div>
+              </div>
+              <div className="col-6">
+                <div className="auth-input-grupo">
+                  <label>Apartamento</label>
+                  <div className="auth-input-wrapper">
+                    <i className="bi bi-door-closed"></i>
+                    <input
+                      type="text"
+                      name="apartamento"
+                      placeholder="Ej: 304"
+                      value={usuario.apartamento}
+                      onChange={manejarCambio}
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="auth-input-grupo">
+              <label>Correo electrónico <span className="text-danger">*</span></label>
+              <div className="auth-input-wrapper">
+                <i className="bi bi-envelope"></i>
+                <input
+                  type="email"
+                  name="correo"
+                  placeholder="ejemplo@correo.com"
+                  autoComplete="email"
+                  value={usuario.correo}
+                  onChange={manejarCambio}
+                />
+              </div>
+              {errores.correo && <div className="auth-input-error">{errores.correo}</div>}
+            </div>
+
+            <div className="auth-input-grupo">
+              <label>Contraseña <span className="text-danger">*</span></label>
+              <div className="auth-input-wrapper">
+                <i className="bi bi-lock"></i>
+                <input
+                  type="password"
+                  name="contraseña"
+                  placeholder="Mínimo 6 caracteres"
+                  value={usuario.contraseña}
+                  onChange={manejarCambio}
+                />
+              </div>
+              {errores.contraseña && <div className="auth-input-error">{errores.contraseña}</div>}
+            </div>
+
+            <div className="mb-4">
+              <label className="d-block small text-muted mb-2">Rol en la unidad:</label>
+              <div className="auth-selector-rol">
+                <button
+                  type="button"
+                  className={`auth-rol-btn ${usuario.rol === 'USUARIO' ? 'activo' : ''}`}
+                  onClick={() => setUsuario((prev) => ({ ...prev, rol: 'USUARIO' }))}
+                >
+                  <i className="bi bi-person-badge"></i>
+                  <span>Residente</span>
+                </button>
+                <button
+                  type="button"
+                  className={`auth-rol-btn ${usuario.rol === 'ADMINISTRADOR' ? 'activo' : ''}`}
+                  onClick={() => setUsuario((prev) => ({ ...prev, rol: 'ADMINISTRADOR' }))}
+                >
+                  <i className="bi bi-shield-lock"></i>
+                  <span>Administrador</span>
+                </button>
+              </div>
+              {errores.rol && <div className="auth-input-error">{errores.rol}</div>}
+            </div>
+
+            <button type="submit" className="btn btn-marca w-100 py-2 mb-3" disabled={enviando}>
+              <i className="bi bi-check-lg me-1"></i>
+              {enviando ? 'Creando cuenta...' : 'Crear mi cuenta'}
+            </button>
+          </form>
+
+          <p className="text-center texto-suave small mb-0">
+            ¿Ya tienes una cuenta?{' '}
+            <Link to="/login" className="auth-enlace">
+              Inicia sesión aquí
+            </Link>
+          </p>
+        </div>
       </div>
     </div>
   )

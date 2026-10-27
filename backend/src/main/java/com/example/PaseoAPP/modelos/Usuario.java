@@ -1,6 +1,7 @@
 package com.example.PaseoAPP.modelos;
 
 import com.example.PaseoAPP.enums.Rol;
+import com.fasterxml.jackson.annotation.JsonAlias;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
@@ -20,6 +21,7 @@ public class Usuario {
     @Column(unique = true, nullable = false)
     private String correo;
     @Column(nullable = false)
+    @JsonAlias({"contrasena", "password"})
     private String contraseña;
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)

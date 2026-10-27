@@ -1,26 +1,22 @@
 import { useEffect, useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
-
+import { Link } from 'react-router-dom'
 import { listarEspacios } from '../services/servicioEspacios.js'
-import { fotoDeEspacio } from '../services/fotosEspacios.js'
+import { TarjetaEspacio } from '../componentes/TarjetaEspacio.jsx'
+import { Navbar } from '../componentes/Navbar.jsx'
+import { Spinner } from '../componentes/Spinner.jsx'
 import { useSesion } from '../contexto/ContextoSesion.jsx'
-import fachada from '../assets/fachada_unidad.jpg'
 
 export function Home() {
-  const navegar = useNavigate()
-  const { usuario, esAdministrador, cerrarSesion } = useSesion()
-
+  const { usuario, esAdministrador } = useSesion()
   const [espacios, setEspacios] = useState([])
   const [cargando, setCargando] = useState(true)
 
-  // Cargamos los espacios reales del API (mismos del catalogo)
   useEffect(function () {
     async function cargarEspacios() {
       try {
         const datos = await listarEspacios()
         setEspacios(datos)
       } catch {
-        // Si falla mostramos la portada igual, sin zonas
         setEspacios([])
       } finally {
         setCargando(false)
@@ -29,170 +25,209 @@ export function Home() {
     cargarEspacios()
   }, [])
 
-  function salir() {
-    cerrarSesion()
-    navegar('/login')
-  }
-
-  function pintarZona(espacio) {
-    return (
-      <div className="col-md-4" key={espacio.id}>
-        <div className="tarjeta-zona h-100">
-          <div className="tarjeta-zona-foto">
-            <img src={fotoDeEspacio(espacio)} alt={espacio.nombre} />
-          </div>
-          <div className="tarjeta-zona-cuerpo">
-            <h5 className="fw-bold mb-2">{espacio.nombre}</h5>
-            <p className="mb-0">{espacio.descripcion}</p>
-          </div>
-        </div>
-      </div>
-    )
-  }
-
   return (
-    <div>
-      {/* Barra de navegación */}
-      <nav className="navbar navbar-expand-lg navbar-dark fixed-top barra-navegacion">
+    <div style={{ paddingTop: '60px' }}>
+      <Navbar />
+
+      {/* Portada relajante con paleta sólida y neutra */}
+      <header className="portada-relajante">
         <div className="container">
-          <Link to="/catalogo" className="navbar-brand d-flex align-items-center gap-2 fw-bold">
-            <span className="logo-insignia"><i className="bi bi-buildings-fill"></i></span>
-            Portal del Paraíso
-          </Link>
-          <div className="d-flex align-items-center gap-2 flex-wrap">
-            <span className="texto-usuario d-none d-md-inline me-2">
-              <i className="bi bi-person-circle me-1"></i>{usuario.nombres} · {usuario.rol}
-            </span>
-            <Link to="/catalogo" className="btn btn-fantasma btn-sm">
-              <i className="bi bi-grid me-1"></i>Catálogo
-            </Link>
-            <Link to="/reservas" className="btn btn-fantasma btn-sm">
-              <i className="bi bi-calendar-check me-1"></i>Reservas
-            </Link>
-            <button type="button" onClick={salir} className="btn btn-claro btn-sm">
-              <i className="bi bi-box-arrow-right me-1"></i>Salir
-            </button>
-          </div>
-        </div>
-      </nav>
-
-      {/* Portada con la fachada de la unidad */}
-      <header className="portada" style={{ backgroundImage: `url(${fachada})` }}>
-        <div className="container">
-          <div className="col-lg-7">
-            <span className="insignia-ubicacion mb-3">
-              <i className="bi bi-geo-alt-fill me-1"></i>Sabaneta, Antioquia
-            </span>
-            <h1 className="titulo-portada mb-3">Portal del Paraíso</h1>
-            <p className="subtitulo-portada mb-4">
-              Tu unidad residencial en Sabaneta: gestiona las zonas comunes y reserva el espacio que necesitas, cuando lo necesitas.
-              Todo desde un solo lugar.
-            </p>
-            <div className="d-flex flex-wrap gap-3">
-              <Link to="/reservas" className="btn btn-marca btn-lg px-4">
-                <i className="bi bi-calendar-plus me-2"></i>Hacer una reserva
-              </Link>
-              <Link to="/catalogo" className="btn btn-fantasma btn-lg px-4">
-                <i className="bi bi-grid me-2"></i>Ver catálogo
-              </Link>
-            </div>
-          </div>
-        </div>
-      </header>
-
-      {/* Zonas comunes: datos reales del API */}
-      <section className="seccion py-5">
-        <div className="container py-4">
-          <div className="text-center mb-5">
-            <span className="etiqueta-seccion">Zonas comunes</span>
-            <h2 className="titulo-seccion fw-bold mt-2">Espacios pensados para ti</h2>
-            <p className="texto-suave">Conoce los espacios que puedes disfrutar y reservar.</p>
-          </div>
-          {cargando && <p className="text-center texto-suave">Cargando espacios...</p>}
-          {!cargando && (
-            espacios.length === 0
-              ? <p className="text-center texto-suave">Todavía no hay espacios registrados.</p>
-              : <div className="row g-4">{espacios.map(pintarZona)}</div>
-          )}
-        </div>
-      </section>
-
-      {/* Acciones principales */}
-      <section className="seccion-alt py-5">
-        <div className="container py-4">
-          <div className="text-center mb-5">
-            <span className="etiqueta-seccion">Acciones</span>
-            <h2 className="titulo-seccion fw-bold mt-2">¿Qué deseas hacer?</h2>
-            <p className="texto-suave">Administra los espacios o aparta el tuyo en pocos pasos.</p>
-          </div>
-          <div className="row g-4 justify-content-center">
-            {esAdministrador && (
-              <div className="col-md-5">
-                <div className="tarjeta-accion h-100 text-center p-4">
-                  <div className="icono-circulo mx-auto mb-3">
-                    <i className="bi bi-door-open"></i>
-                  </div>
-                  <h4 className="fw-bold">Registrar espacio</h4>
-                  <p className="texto-suave">
-                    Crea las zonas comunes de la unidad con su descripción, foto y aforo máximo.
-                  </p>
-                  <Link to="/admin/nuevo-espacio" className="btn btn-marca mt-auto">
-                    Ir al formulario <i className="bi bi-arrow-right ms-1"></i>
-                  </Link>
-                </div>
+          <div className="row align-items-center">
+            <div className="col-lg-8">
+              <div className="d-flex align-items-center gap-2 mb-3">
+                <span className="insignia-ubicacion">
+                  <i className="bi bi-geo-alt me-1"></i>Sabaneta, Antioquia
+                </span>
+                <span className="insignia-ubicacion">
+                  <i className="bi bi-shield-check me-1"></i>Portal Residencial
+                </span>
               </div>
-            )}
-            <div className="col-md-5">
-              <div className="tarjeta-accion h-100 text-center p-4">
-                <div className="icono-circulo mx-auto mb-3">
-                  <i className="bi bi-calendar-check"></i>
-                </div>
-                <h4 className="fw-bold">Registrar reserva</h4>
-                <p className="texto-suave">
-                  Elige la fecha y la hora en que quieres usar uno de los espacios disponibles.
-                </p>
-                <Link to="/reservas" className="btn btn-marca mt-auto">
-                  Ir al formulario <i className="bi bi-arrow-right ms-1"></i>
+
+              <h1 className="titulo-portada mb-3">
+                Bienvenido a casa{usuario?.nombres ? `, ${usuario.nombres.split(' ')[0]}` : ''}.
+              </h1>
+
+              <p className="subtitulo-portada mb-4">
+                Disfruta los espacios comunes de tu unidad residencial. Reserva la piscina, gimnasio,
+                zona BBQ o salón social con total tranquilidad, en tiempo real y sin filas.
+              </p>
+
+              <div className="d-flex flex-wrap gap-3">
+                <Link to="/reservas" className="btn-portada-primario">
+                  <i className="bi bi-calendar-plus"></i>
+                  <span>Hacer una reserva</span>
+                </Link>
+                <Link to="/catalogo" className="btn-portada-secundario">
+                  <i className="bi bi-grid"></i>
+                  <span>Explorar catálogo</span>
                 </Link>
               </div>
             </div>
           </div>
         </div>
-      </section>
+      </header>
 
-      {/* Beneficios */}
-      <section className="seccion py-5">
-        <div className="container py-4">
-          <div className="row g-4 text-center">
+      {/* Franja de métricas e indicadores de tranquilidad */}
+      <section className="estadisticas-franja">
+        <div className="container">
+          <div className="row g-4 justify-content-between">
             <div className="col-md-4">
-              <div className="icono-circulo mx-auto mb-3"><i className="bi bi-clock-history"></i></div>
-              <h5 className="fw-bold">Reservas en segundos</h5>
-              <p className="texto-suave mb-0">Sin llamadas ni filas en la portería.</p>
+              <div className="item-estadistica">
+                <div className="icono-estadistica">
+                  <i className="bi bi-tree"></i>
+                </div>
+                <div>
+                  <h6 className="fw-semibold mb-0">Zonas exclusivas</h6>
+                  <small className="texto-suave">Espacios cuidados para tu descanso y recreación</small>
+                </div>
+              </div>
             </div>
             <div className="col-md-4">
-              <div className="icono-circulo mx-auto mb-3"><i className="bi bi-people"></i></div>
-              <h5 className="fw-bold">Control de aforo</h5>
-              <p className="texto-suave mb-0">Cada espacio respeta su capacidad máxima.</p>
+              <div className="item-estadistica">
+                <div className="icono-estadistica">
+                  <i className="bi bi-clock-history"></i>
+                </div>
+                <div>
+                  <h6 className="fw-semibold mb-0">Disponibilidad clara</h6>
+                  <small className="texto-suave">Horarios y aforos transparentes en cada reserva</small>
+                </div>
+              </div>
             </div>
             <div className="col-md-4">
-              <div className="icono-circulo mx-auto mb-3"><i className="bi bi-shield-check"></i></div>
-              <h5 className="fw-bold">Administración segura</h5>
-              <p className="texto-suave mb-0">Roles de administrador y residente.</p>
+              <div className="item-estadistica">
+                <div className="icono-estadistica">
+                  <i className="bi bi-shield-check"></i>
+                </div>
+                <div>
+                  <h6 className="fw-semibold mb-0">Gestión sin filas</h6>
+                  <small className="texto-suave">Reserva y cancela desde tu móvil o computadora</small>
+                </div>
+              </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Pie de página */}
-      <footer className="pie-pagina py-4">
-        <div className="container d-flex flex-wrap justify-content-between align-items-center gap-3">
-          <div className="d-flex align-items-center gap-2 fw-bold">
-            <span className="logo-insignia"><i className="bi bi-buildings-fill"></i></span>
-            Portal del Paraíso
+      {/* Sección de Zonas Comunes con imágenes */}
+      <section className="seccion">
+        <div className="container">
+          <div className="d-flex justify-content-between align-items-end flex-wrap gap-3 mb-4">
+            <div>
+              <span className="etiqueta-seccion">Zonas comunes</span>
+              <h2 className="titulo-seccion mt-2 mb-1">Espacios disponibles para ti</h2>
+              <p className="texto-suave mb-0">Selecciona el espacio que deseas utilizar y confirma tu horario.</p>
+            </div>
+            <Link to="/catalogo" className="btn btn-fantasma btn-sm">
+              Ver todos ({espacios.length}) <i className="bi bi-arrow-right ms-1"></i>
+            </Link>
           </div>
-          <div className="texto-suave small">
-            <i className="bi bi-geo-alt me-1"></i>Sabaneta, Antioquia, Colombia
-            <span className="mx-2">|</span>© 2026 Todos los derechos reservados
+
+          {cargando ? (
+            <div className="py-5 text-center">
+              <Spinner texto="Cargando espacios de la unidad..." />
+            </div>
+          ) : espacios.length === 0 ? (
+            <div className="card-neutra p-5 text-center">
+              <i className="bi bi-info-circle fs-2 text-muted mb-3 d-block"></i>
+              <h5>No hay zonas comunes registradas</h5>
+              <p className="texto-suave mb-3">En este momento no se encontraron espacios registrados en la base de datos.</p>
+              {esAdministrador && (
+                <Link to="/admin/nuevo-espacio" className="btn btn-marca btn-sm">
+                  <i className="bi bi-plus-lg me-1"></i>Registrar primer espacio
+                </Link>
+              )}
+            </div>
+          ) : (
+            <div className="row g-4">
+              {espacios.slice(0, 6).map((espacio) => (
+                <div className="col-lg-4 col-md-6" key={espacio.id}>
+                  <TarjetaEspacio espacio={espacio} />
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      </section>
+
+      {/* Acciones principales del usuario */}
+      <section className="seccion seccion-blanca border-top border-bottom">
+        <div className="container">
+          <div className="text-center mb-5">
+            <span className="etiqueta-seccion">Servicios</span>
+            <h2 className="titulo-seccion mt-2 mb-1">¿Qué deseas hacer hoy?</h2>
+            <p className="texto-suave">Accesos directos para la gestión de tus zonas comunes.</p>
+          </div>
+
+          <div className="row g-4 justify-content-center">
+            <div className="col-md-4">
+              <div className="tarjeta-accion h-100">
+                <div className="icono-circulo mx-auto mb-3">
+                  <i className="bi bi-calendar-plus"></i>
+                </div>
+                <h5 className="fw-semibold mb-2">Nueva reserva</h5>
+                <p className="texto-suave mb-4">
+                  Elige la fecha, la franja horaria y la cantidad de acompañantes para tu próxima visita.
+                </p>
+                <Link to="/reservas" className="btn btn-marca mt-auto">
+                  <span>Reservar ahora</span>
+                  <i className="bi bi-arrow-right"></i>
+                </Link>
+              </div>
+            </div>
+
+            <div className="col-md-4">
+              <div className="tarjeta-accion h-100">
+                <div className="icono-circulo mx-auto mb-3">
+                  <i className="bi bi-journal-bookmark"></i>
+                </div>
+                <h5 className="fw-semibold mb-2">Mis reservas</h5>
+                <p className="texto-suave mb-4">
+                  Revisa el historial de tus solicitudes confirmadas o cancela las que ya no vayas a usar.
+                </p>
+                <Link to="/mis-reservas" className="btn btn-fantasma mt-auto">
+                  <span>Ver mi historial</span>
+                  <i className="bi bi-arrow-right"></i>
+                </Link>
+              </div>
+            </div>
+
+            {esAdministrador && (
+              <div className="col-md-4">
+                <div className="tarjeta-accion h-100">
+                  <div className="icono-circulo mx-auto mb-3">
+                    <i className="bi bi-shield-gear"></i>
+                  </div>
+                  <h5 className="fw-semibold mb-2">Panel administrativo</h5>
+                  <p className="texto-suave mb-4">
+                    Visualiza las reservas de toda la unidad residencial o agrega nuevos espacios comunes.
+                  </p>
+                  <Link to="/admin/reservas-globales" className="btn btn-fantasma mt-auto">
+                    <span>Gestionar reservas</span>
+                    <i className="bi bi-arrow-right"></i>
+                  </Link>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      </section>
+
+      {/* Pie de página neutro y relajante */}
+      <footer className="pie-pagina">
+        <div className="container">
+          <div className="d-flex flex-wrap justify-content-between align-items-center gap-3">
+            <div className="d-flex align-items-center gap-2">
+              <span className="logo-insignia" style={{ width: '28px', height: '28px', fontSize: '0.85rem' }}>
+                <i className="bi bi-buildings"></i>
+              </span>
+              <strong className="text-dark">Portal del Paraíso</strong>
+              <span className="text-muted small">· Unidad Residencial</span>
+            </div>
+            <div className="texto-suave small">
+              <i className="bi bi-geo-alt me-1"></i>Sabaneta, Antioquia
+              <span className="mx-2">|</span>
+              <span>Gestión de Zonas Comunes</span>
+            </div>
           </div>
         </div>
       </footer>
